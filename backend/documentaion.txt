@@ -1,0 +1,8 @@
+PUT /login (put using email and password)=> returns a message and token
+
+/users protected route using passport-jwt (token must be in header)
+
+GET /users (Return all array of all users)
+GET /users/:id (Return a specific user using ID)
+POST /users (post to the database directly , return a message and user object)
+PUT /users/:id (Update a specific user , return updated data and message)

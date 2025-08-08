@@ -1,0 +1,5 @@
+first /login verify admin credidentials 
+(fixed username and password)
+
+then get /users (return all users)
+then put /users (add a new user after validations)

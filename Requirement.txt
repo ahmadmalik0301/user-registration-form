@@ -1,0 +1,31 @@
+Admin Panel Requirements
+
+1. Admin Authentication
+   - The admin must log in first using a fixed username and password.
+
+2. Admin Dashboard
+   - After successful login, the admin is redirected to the dashboard.
+
+3. User Management
+   - Add User:
+    (Using Actual DB)
+     Admin can add a new user by providing the following fields:
+     - First Name
+     - Last Name
+     - Age
+     - Phone Number
+     - Email
+     - Country (Drop Down Menu)
+     - Address
+     (Proper validation)
+
+   - Delete User:
+     Admin can delete any existing user from the system.
+
+   - Update User:
+     When the admin chooses to update a user:
+     - The user’s existing information is loaded into the form.
+     - The admin can modify any field.
+     - Only the updated fields are saved.
+
+(BUILD BOTH FRONTEND AND BACKEND WITH REAL DB INTREGRATION)
