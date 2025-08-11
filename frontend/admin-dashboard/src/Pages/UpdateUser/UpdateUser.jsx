@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/api";
 import "./UpdateUser.css";
 
 function UpdateUser() {
@@ -21,21 +21,14 @@ function UpdateUser() {
     setUserData(null);
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:3000/users/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.data.user) {
-        setUserData(response.data.user);
-      } else {
-        setMessage("User not found.");
-      }
+      const response = await api.get(`/users/${userId}`);
+      setUserData(response.data.user); // success, user found
     } catch (error) {
-      setMessage("Failed to fetch user.");
+      if (error.response && error.response.status === 404) {
+        setMessage("User not found.");
+      } else {
+        setMessage("Failed to fetch user.");
+      }
     } finally {
       setLoadingUser(false);
     }
@@ -56,13 +49,7 @@ function UpdateUser() {
     try {
       const { id, ...dataWithoutId } = userData;
       const token = localStorage.getItem("token");
-      const response = await axios.put(
-        `http://localhost:3000/users/${userId}`,
-        dataWithoutId,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.put(`users/${userId}`, dataWithoutId);
 
       setMessage(response.data.message || "User updated successfully!");
     } catch (error) {

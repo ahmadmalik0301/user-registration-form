@@ -6,15 +6,18 @@ import cors from "cors";
 import loginScheme from "./Validations/loginSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import passport from "./middleware/passportJwt.js";
 import userRouter from "./Routers/userRouter.js";
 
+import authenticateJWT from "./middleware/authenticateJWT.js";
 const app = express();
 
 app.use(express.json());
-app.use(passport.initialize());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 interface login {
   email: string;
   password: string;
@@ -38,7 +41,7 @@ app.post("/login", async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const token = jwt.sign({ email, role: "Admin" }, process.env.JWT_SECRET!, {
-      expiresIn: "5h",
+      expiresIn: "1h",
     });
 
     res.status(200).json({ message: "Login Successful", token });
@@ -47,8 +50,7 @@ app.post("/login", async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 });
-
-app.use("/users", passport.authenticate("jwt", { session: false }), userRouter);
+app.use("/users", authenticateJWT, userRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).send({ message: "404- Page not Found" });

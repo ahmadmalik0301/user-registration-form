@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/api";
 import "./DeleteUser.css";
 
 function DeleteUser() {
@@ -19,18 +19,11 @@ function DeleteUser() {
     setDeletedUser(null);
 
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await axios.delete(
-        `http://localhost:3000/users/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.delete(`users/${userId}`);
 
       setMessage(response.data.message || "User deleted successfully.");
       setDeletedUser(response.data.user || null);
-      setUserId(""); // Clear input after delete
+      setUserId("");
     } catch (error) {
       if (error.response) {
         setMessage(error.response.data.message || "Failed to delete user.");

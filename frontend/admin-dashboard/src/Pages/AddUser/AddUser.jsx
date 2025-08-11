@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/api";
 import "./AddUser.css";
 
 function AddUser() {
@@ -17,7 +17,7 @@ function AddUser() {
   const [addedUser, setAddedUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const countries = ["USA", "Canada", "UK", "Australia", "Other"];
+  const countries = ["USA", "Canada", "UK", "Australia", "Pakistan", "Other"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,14 +31,7 @@ function AddUser() {
     setAddedUser(null);
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:3000/users",
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await api.post("users", formData);
 
       setMessage(response.data.message || "User added successfully!");
       setAddedUser(response.data.user || null);

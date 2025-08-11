@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/api";
 import "./ShowUsers.css";
 
 function ShowUsers() {
@@ -12,10 +12,7 @@ function ShowUsers() {
       setLoading(true);
       setMessage("");
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await api.get("/users");
 
         setUsers(response.data.users || []);
         setMessage(response.data.message || "Users fetched successfully!");
