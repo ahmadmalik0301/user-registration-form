@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./DeleteUser.css";
 
 function DeleteUser() {
   const [userId, setUserId] = useState("");
@@ -8,7 +9,7 @@ function DeleteUser() {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    if (!userId) {
+    if (!userId.trim()) {
       setMessage("Please enter a user ID.");
       return;
     }
@@ -20,7 +21,6 @@ function DeleteUser() {
     try {
       const token = localStorage.getItem("token");
 
-      // Assuming your API endpoint is something like /api/users/:id
       const response = await axios.delete(
         `http://localhost:3000/users/${userId}`,
         {
@@ -43,36 +43,45 @@ function DeleteUser() {
   };
 
   return (
-    <div className="container">
-      <h2>Delete User</h2>
+    <section className="container">
+      <header>
+        <h2>Delete User</h2>
+      </header>
 
-      <label>User ID:</label>
-      <br />
-      <input
-        type="text"
-        value={userId}
-        onChange={(e) => setUserId(e.target.value)}
-        placeholder="Enter user ID"
-      />
-      <br />
-
-      <button
-        onClick={handleDelete}
-        disabled={loading}
-        style={{ marginTop: 10 }}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleDelete();
+        }}
+        aria-label="Delete user form"
       >
-        {loading ? "Deleting..." : "Delete User"}
-      </button>
+        <div className="form-group">
+          <label htmlFor="userId">User ID:</label>
+          <input
+            id="userId"
+            name="userId"
+            type="text"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder="Enter user ID"
+            required
+          />
+        </div>
 
-      {message && <p style={{ marginTop: 20 }}>{message}</p>}
+        <button type="submit" disabled={loading}>
+          {loading ? "Deleting..." : "Delete User"}
+        </button>
+      </form>
+
+      {message && <p role="alert">{message}</p>}
 
       {deletedUser && (
-        <div style={{ marginTop: 10 }}>
+        <article className="deleted-user-info">
           <h3>Deleted User:</h3>
           <pre>{JSON.stringify(deletedUser, null, 2)}</pre>
-        </div>
+        </article>
       )}
-    </div>
+    </section>
   );
 }
 

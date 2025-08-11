@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./ShowUsers.css";
 
 function ShowUsers() {
   const [users, setUsers] = useState([]);
@@ -33,55 +34,45 @@ function ShowUsers() {
   }, []);
 
   return (
-    <div className="container">
-      <h2>All Users</h2>
+    <section className="show-container">
+      <header>
+        <h2>All Users</h2>
+      </header>
 
-      {loading && <p>Loading users...</p>}
+      {loading && <p aria-live="polite">Loading users...</p>}
 
-      {message && <p>{message}</p>}
+      {message && <p role="alert">{message}</p>}
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "15px",
-          marginTop: 20,
-        }}
-      >
+      <div className="users-list" aria-live="polite">
+        {users.length === 0 && !loading && <p>No users to display.</p>}
+
         {users.map((user) => (
-          <div
-            key={user.id}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "15px",
-              width: "250px",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-              backgroundColor: "#f9f9f9",
-            }}
-          >
+          <article key={user.id} className="user-card">
             <h3>
               {user.first_name} {user.last_name}
             </h3>
             <p>
-              <strong>Age:</strong> {user.age}
+              <strong>ID:</strong> {user.id}
+            </p>
+            <p>
+              <strong>Age:</strong> {user.age || "N/A"}
             </p>
             <p>
               <strong>Email:</strong> {user.email}
             </p>
             <p>
-              <strong>Phone:</strong> {user.phone_number}
+              <strong>Phone:</strong> {user.phone_number || "N/A"}
             </p>
             <p>
-              <strong>Country:</strong> {user.country}
+              <strong>Country:</strong> {user.country || "N/A"}
             </p>
             <p>
-              <strong>Address:</strong> {user.address}
+              <strong>Address:</strong> {user.address || "N/A"}
             </p>
-          </div>
+          </article>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 

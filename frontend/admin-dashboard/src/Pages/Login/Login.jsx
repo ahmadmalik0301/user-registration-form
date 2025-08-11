@@ -1,19 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
-import "./App.css";
+import { useNavigate } from "react-router-dom";
+import "./Login.css";
 
-function App() {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [token, setToken] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-    setToken(null);
 
     try {
       const response = await axios.post("http://localhost:3000/login", {
@@ -21,19 +21,15 @@ function App() {
         password,
       });
 
-      // Assuming your API returns { token: "...", message: "..." }
-      setToken(response.data.token);
-      setMessage(response.data.message || "Login successful!");
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      setMessage("Login successful!");
 
-      // Optional: Save token in localStorage for persistence
-      localStorage.setItem("token", response.data.token);
+      navigate("/dashboard");
     } catch (error) {
-      // Handle errors (network or API errors)
       if (error.response) {
-        // Server responded with an error status
         setMessage(error.response.data.message || "Login failed!");
       } else {
-        // Network or other error
         setMessage("An error occurred. Please try again.");
       }
     } finally {
@@ -42,43 +38,48 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <h2>Login</h2>
-
-      <form onSubmit={handleSubmit}>
-        <label>Email:</label>
-        <br />
+    <div className="login-container">
+      <h2 className="login-title">Login</h2>
+      <form onSubmit={handleSubmit} className="login-form">
+        <label className="login-label" htmlFor="email">
+          Email:
+        </label>
         <input
+          id="email"
+          className="login-input"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <br />
 
-        <label>Password:</label>
-        <br />
+        <label className="login-label" htmlFor="password">
+          Password:
+        </label>
         <input
+          id="password"
+          className="login-input"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <br />
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className="login-button">
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
-
-      {/* Show message below the form */}
       {message && (
-        <div style={{ marginTop: 20, color: token ? "green" : "red" }}>
+        <p
+          className={`login-message ${
+            message.toLowerCase().includes("successful") ? "success" : "error"
+          }`}
+        >
           {message}
-        </div>
+        </p>
       )}
     </div>
   );
 }
 
-export default App;
+export default Login;

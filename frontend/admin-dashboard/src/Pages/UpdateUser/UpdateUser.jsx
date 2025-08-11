@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./UpdateUser.css";
 
 function UpdateUser() {
   const [userId, setUserId] = useState("");
@@ -67,13 +68,10 @@ function UpdateUser() {
     } catch (error) {
       console.error("Update error:", error);
       if (error.response) {
-        console.error("Response data:", error.response.data);
         setMessage(error.response.data.message || "Failed to update user.");
       } else if (error.request) {
-        console.error("No response received:", error.request);
         setMessage("No response from server.");
       } else {
-        console.error("Request setup error:", error.message);
         setMessage("An error occurred. Please try again.");
       }
     } finally {
@@ -82,13 +80,15 @@ function UpdateUser() {
   };
 
   return (
-    <div className="container">
-      <h2>Update User</h2>
+    <section className="updateuser-container">
+      <header>
+        <h2>Update User</h2>
+      </header>
 
-      <div>
-        <label>Enter User ID:</label>
-        <br />
+      <div className="load-user-section">
+        <label htmlFor="userIdInput">Enter User ID:</label>
         <input
+          id="userIdInput"
           type="text"
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
@@ -97,41 +97,39 @@ function UpdateUser() {
         <button
           onClick={fetchUser}
           disabled={loadingUser}
-          style={{ marginLeft: 10 }}
+          className="load-user-btn"
         >
           {loadingUser ? "Loading..." : "Load User"}
         </button>
       </div>
 
-      {message && <p style={{ marginTop: 10 }}>{message}</p>}
+      {message && <p className="message">{message}</p>}
 
       {userData && (
-        <form onSubmit={handleUpdate} style={{ marginTop: 20 }}>
-          <label>First Name:</label>
-          <br />
+        <form onSubmit={handleUpdate} className="updateuser-form">
+          <label htmlFor="firstName">First Name:</label>
           <input
+            id="firstName"
             type="text"
             name="first_name"
             value={userData.first_name || ""}
             onChange={handleChange}
             required
           />
-          <br />
 
-          <label>Last Name:</label>
-          <br />
+          <label htmlFor="lastName">Last Name:</label>
           <input
+            id="lastName"
             type="text"
             name="last_name"
             value={userData.last_name || ""}
             onChange={handleChange}
             required
           />
-          <br />
 
-          <label>Age:</label>
-          <br />
+          <label htmlFor="age">Age:</label>
           <input
+            id="age"
             type="number"
             name="age"
             value={userData.age || ""}
@@ -139,33 +137,30 @@ function UpdateUser() {
             required
             min={1}
           />
-          <br />
 
-          <label>Phone Number:</label>
-          <br />
+          <label htmlFor="phoneNumber">Phone Number:</label>
           <input
+            id="phoneNumber"
             type="tel"
             name="phone_number"
             value={userData.phone_number || ""}
             onChange={handleChange}
             required
           />
-          <br />
 
-          <label>Email:</label>
-          <br />
+          <label htmlFor="email">Email:</label>
           <input
+            id="email"
             type="email"
             name="email"
             value={userData.email || ""}
             onChange={handleChange}
             required
           />
-          <br />
 
-          <label>Country:</label>
-          <br />
+          <label htmlFor="country">Country:</label>
           <select
+            id="country"
             name="country"
             value={userData.country || ""}
             onChange={handleChange}
@@ -178,25 +173,23 @@ function UpdateUser() {
               </option>
             ))}
           </select>
-          <br />
 
-          <label>Address:</label>
-          <br />
+          <label htmlFor="address">Address:</label>
           <textarea
+            id="address"
             name="address"
             value={userData.address || ""}
             onChange={handleChange}
             rows={3}
             required
-          ></textarea>
-          <br />
+          />
 
-          <button type="submit" disabled={loadingUpdate}>
+          <button type="submit" disabled={loadingUpdate} className="update-btn">
             {loadingUpdate ? "Updating..." : "Update User"}
           </button>
         </form>
       )}
-    </div>
+    </section>
   );
 }
 

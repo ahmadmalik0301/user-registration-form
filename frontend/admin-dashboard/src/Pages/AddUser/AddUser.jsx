@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./AddUser.css";
 
 function AddUser() {
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ function AddUser() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3000/users", // replace with your API endpoint
+        "http://localhost:3000/users",
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -42,7 +43,6 @@ function AddUser() {
       setMessage(response.data.message || "User added successfully!");
       setAddedUser(response.data.user || null);
 
-      // Reset form
       setFormData({
         first_name: "",
         last_name: "",
@@ -64,73 +64,83 @@ function AddUser() {
   };
 
   return (
-    <div className="container">
-      <h2>Add New User</h2>
+    <div className="adduser-container">
+      <h2 className="adduser-title">Add New User</h2>
 
-      <form onSubmit={handleSubmit}>
-        <label>First Name:</label>
-        <br />
+      <form onSubmit={handleSubmit} className="adduser-form">
+        <label className="adduser-label" htmlFor="first_name">
+          First Name:
+        </label>
         <input
+          id="first_name"
+          className="adduser-input"
           type="text"
           name="first_name"
           value={formData.first_name}
           onChange={handleChange}
           required
         />
-        <br />
 
-        <label>Last Name:</label>
-        <br />
+        <label className="adduser-label" htmlFor="last_name">
+          Last Name:
+        </label>
         <input
+          id="last_name"
+          className="adduser-input"
           type="text"
           name="last_name"
           value={formData.last_name}
           onChange={handleChange}
           required
         />
-        <br />
 
-        <label>Age:</label>
-        <br />
+        <label className="adduser-label" htmlFor="age">
+          Age:
+        </label>
         <input
+          id="age"
+          className="adduser-input"
           type="number"
           name="age"
           value={formData.age}
           onChange={handleChange}
-          required
           min={1}
         />
-        <br />
 
-        <label>Phone Number:</label>
-        <br />
+        <label className="adduser-label" htmlFor="phone_number">
+          Phone Number:
+        </label>
         <input
+          id="phone_number"
+          className="adduser-input"
           type="tel"
           name="phone_number"
           value={formData.phone_number}
           onChange={handleChange}
-          required
         />
-        <br />
 
-        <label>Email:</label>
-        <br />
+        <label className="adduser-label" htmlFor="email">
+          Email:
+        </label>
         <input
+          id="email"
+          className="adduser-input"
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           required
         />
-        <br />
 
-        <label>Country:</label>
-        <br />
+        <label className="adduser-label" htmlFor="country">
+          Country:
+        </label>
         <select
+          id="country"
+          className="adduser-select"
           name="country"
           value={formData.country}
           onChange={handleChange}
-          required
         >
           <option value="">Select a country</option>
           {countries.map((c) => (
@@ -139,22 +149,29 @@ function AddUser() {
             </option>
           ))}
         </select>
-        <br />
 
-        <label>Address:</label>
-        <br />
+        <label className="adduser-label" htmlFor="address">
+          Address:
+        </label>
         <textarea
+          id="address"
+          className="adduser-textarea"
           name="address"
           value={formData.address}
           onChange={handleChange}
           rows={3}
-          required
-        ></textarea>
-        <br />
+        />
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className="adduser-button">
           {loading ? "Adding..." : "Submit"}
         </button>
+
+        {message && <p className="adduser-message">{message}</p>}
+        {addedUser && (
+          <pre className="adduser-userdata">
+            {JSON.stringify(addedUser, null, 2)}
+          </pre>
+        )}
       </form>
     </div>
   );

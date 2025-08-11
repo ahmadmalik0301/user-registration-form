@@ -2,14 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Login from "./Login";
-import Dashboard from "./Dashboard";
-import AddUser from "./AddUser";
-import UpdateUser from "./UpdateUser";
-import DeleteUser from "./DeleteUser";
-import ShowUsers from "./ShowUsers";
-
-import "./App.css";
+import Login from "./Pages/Login/Login";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import AddUser from "./Pages/AddUser/AddUser";
+import UpdateUser from "./Pages/UpdateUser/UpdateUser";
+import DeleteUser from "./Pages/DeleteUser/DeleteUser";
+import ShowUsers from "./Pages/ShowUsers/ShowUsers";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
