@@ -8,7 +8,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import passport from "./middleware/passportJwt.js";
 import userRouter from "./Routers/userRouter.js";
-import { nextTick } from "process";
 
 const app = express();
 
@@ -16,15 +15,20 @@ app.use(express.json());
 app.use(passport.initialize());
 
 app.use(cors());
-
+interface login {
+  email: string;
+  password: string;
+}
 app.post("/login", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { error, value } = loginScheme.validate(req.body);
+    const { error, value }: { error: any; value: login } = loginScheme.validate(
+      req.body
+    );
     if (error) return res.status(400).json({ message: error.message });
 
-    const { email, password } = value;
+    const { email, password }: login = value;
 
-    if (email !== process.env.ADMIN_EMAIL) {
+    if (email !== process.env.ADMIN_EMAIL!) {
       return res.status(401).json({ message: "Wrong Email" });
     }
 

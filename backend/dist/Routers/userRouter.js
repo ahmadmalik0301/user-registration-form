@@ -3,16 +3,22 @@ import userSchema from "../Validations/userSchema.js";
 import findUser from "../utils/findUser.js";
 import prisma from "../DB/DB.js";
 const router = express.Router();
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            orderBy: [{ id: "asc" }],
+        });
         if (users.length === 0) {
             return res.status(200).json({ message: "No user to display" });
         }
-        res.status(200).json({ message: "All users ", users });
+        res.status(200).json({
+            message: "All users in ascending order",
+            users,
+        });
     }
     catch (error) {
         console.error("Error fetching users:", error);
+        next(error);
     }
 });
 router.get("/:id", async (req, res) => {
@@ -112,12 +118,18 @@ router.delete("/:id", async (req, res, next) => {
         if (isNaN(userId)) {
             return res.status(400).json({ message: "Invalid user ID" });
         }
-        const user = await prisma.user.delete({
+        const deletedUser = await prisma.user.delete({
             where: { id: userId },
         });
-        return res.json({ message: "User deleted successfully", user });
+        return res.json({
+            message: "User deleted successfully",
+            user: deletedUser,
+        });
     }
     catch (error) {
+        if (error.code === "P2025") {
+            return res.status(404).json({ message: "No user with this ID exists" });
+        }
         next(error);
     }
 });

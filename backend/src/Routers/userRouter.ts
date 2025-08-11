@@ -3,28 +3,44 @@ import userSchema from "../Validations/userSchema.js";
 import findUser from "../utils/findUser.js";
 
 import prisma from "../DB/DB.js";
-import { Param } from "@prisma/client/runtime/library";
 
+interface User {
+  email: string;
+  first_name: string;
+  last_name: string;
+  age: number | null;
+  phone_number: string | null;
+  country: string | null;
+  address: string | null;
+  id: number;
+}
 const router: Router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await prisma.user.findMany();
+    const users: User[] = await prisma.user.findMany({
+      orderBy: [{ id: "asc" }],
+    });
 
     if (users.length === 0) {
       return res.status(200).json({ message: "No user to display" });
     }
 
-    res.status(200).json({ message: "All users ", users });
+    res.status(200).json({
+      message: "All users in ascending order",
+      users,
+    });
   } catch (error) {
     console.error("Error fetching users:", error);
+    next(error);
   }
 });
+
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const userId = Number(req.params.id);
+    const userId: number = Number(req.params.id);
 
-    const user = await prisma.user.findUnique({
+    const user: User | null = await prisma.user.findUnique({
       where: { id: userId },
     });
 
@@ -41,11 +57,12 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { error, value } = userSchema.validate(req.body);
+    const { error, value }: { error: any; value: Omit<User, "id"> } =
+      userSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
-    const user = await findUser(value.email);
+    const user: User | null = await findUser(value.email);
     if (user)
       return res
         .status(409)
@@ -60,7 +77,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       address,
     } = value;
 
-    const newUser = await prisma.user.create({
+    const newUser: User = await prisma.user.create({
       data: {
         first_name,
         last_name,
@@ -82,20 +99,21 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 
 router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { error, value } = userSchema.validate(req.body);
+    const { error, value }: { error: any; value: Omit<User, "id"> } =
+      userSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ message: error.message });
     }
 
     const userId = Number(req.params.id);
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser: User | null = await prisma.user.findUnique({
       where: { id: userId },
     });
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
-    const newEmail = value.email.trim().toLowerCase();
+    const newEmail: string = value.email.trim().toLowerCase();
     const emailTaken = await prisma.user.findFirst({
       where: {
         email: newEmail,
@@ -108,7 +126,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
         .status(409)
         .json({ message: "Another user with this email already exists" });
 
-    const updatedUser = await prisma.user.update({
+    const updatedUser: User = await prisma.user.update({
       where: { id: userId },
       data: {
         first_name: value.first_name,
@@ -138,12 +156,18 @@ router.delete(
         return res.status(400).json({ message: "Invalid user ID" });
       }
 
-      const user = await prisma.user.delete({
+      const deletedUser: User = await prisma.user.delete({
         where: { id: userId },
       });
 
-      return res.json({ message: "User deleted successfully", user });
-    } catch (error) {
+      return res.json({
+        message: "User deleted successfully",
+        user: deletedUser,
+      });
+    } catch (error: any) {
+      if (error.code === "P2025") {
+        return res.status(404).json({ message: "No user with this ID exists" });
+      }
       next(error);
     }
   }
