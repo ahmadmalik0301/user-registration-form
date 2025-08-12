@@ -19,11 +19,11 @@ app.post("/login", async (req, res, next) => {
             return res.status(400).json({ message: error.message });
         const { email, password } = value;
         if (email !== process.env.ADMIN_EMAIL) {
-            return res.status(401).json({ message: "Wrong Email" });
+            return res.status(401).json({ message: "Wrong Credidential" });
         }
         const isMatch = await bcrypt.compare(password, process.env.ADMIN_PASS);
         if (!isMatch) {
-            return res.status(401).json({ message: "Wrong Password" });
+            return res.status(401).json({ message: "Wrong Credidential" });
         }
         const token = jwt.sign({ email, role: "Admin" }, process.env.JWT_SECRET, {
             expiresIn: "1h",

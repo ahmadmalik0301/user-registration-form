@@ -9,7 +9,7 @@ function UpdateUser() {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [message, setMessage] = useState("");
 
-  const countries = ["USA", "Canada", "UK", "Australia", "Other"];
+  const countries = ["USA", "Canada", "UK", "Australia", "Pakistan", "Other"];
 
   const fetchUser = async () => {
     if (!userId) {
@@ -22,7 +22,7 @@ function UpdateUser() {
 
     try {
       const response = await api.get(`/users/${userId}`);
-      setUserData(response.data.user); // success, user found
+      setUserData(response.data.user);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setMessage("User not found.");

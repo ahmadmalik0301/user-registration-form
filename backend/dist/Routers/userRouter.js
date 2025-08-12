@@ -75,6 +75,9 @@ router.put("/:id", async (req, res, next) => {
             return res.status(400).json({ message: error.message });
         }
         const userId = Number(req.params.id);
+        if (isNaN(userId)) {
+            return res.status(400).json({ message: "Invalid user ID" });
+        }
         const existingUser = await prisma.user.findUnique({
             where: { id: userId },
         });
@@ -92,16 +95,17 @@ router.put("/:id", async (req, res, next) => {
             return res
                 .status(409)
                 .json({ message: "Another user with this email already exists" });
+        const { first_name, last_name, age, phone_number, email, country, address, } = value;
         const updatedUser = await prisma.user.update({
             where: { id: userId },
             data: {
-                first_name: value.first_name,
-                last_name: value.last_name,
-                age: value.age,
-                phone_number: value.phone_number,
-                email: value.email,
-                country: value.country,
-                address: value.address,
+                first_name,
+                last_name,
+                age,
+                phone_number,
+                email,
+                country,
+                address,
             },
         });
         res
