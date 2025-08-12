@@ -1,8 +1,8 @@
 import prisma from "../DB/DB.js";
-async function getUser(email) {
+async function findUser(email) {
     const user = prisma.user.findUnique({
         where: { email },
     });
     return user;
 }
-export default getUser;
+export default findUser;

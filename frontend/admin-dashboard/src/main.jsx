@@ -12,7 +12,7 @@ import ShowUsers from "./Pages/ShowUsers/ShowUsers";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/add-user" element={<AddUser />} />
       <Route path="/update-user" element={<UpdateUser />} />
