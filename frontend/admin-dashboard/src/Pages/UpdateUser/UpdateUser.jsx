@@ -27,7 +27,7 @@ function UpdateUser() {
       if (error.response && error.response.status === 404) {
         setMessage("User not found.");
       } else {
-        setMessage("Failed to fetch user.");
+        setMessage(error.response.data.message);
       }
     } finally {
       setLoadingUser(false);
@@ -48,7 +48,6 @@ function UpdateUser() {
 
     try {
       const { id, ...dataWithoutId } = userData;
-      const token = localStorage.getItem("token");
       const response = await api.put(`users/${userId}`, dataWithoutId);
 
       setMessage(response.data.message || "User updated successfully!");
@@ -121,8 +120,6 @@ function UpdateUser() {
             name="age"
             value={userData.age || ""}
             onChange={handleChange}
-            required
-            min={1}
           />
 
           <label htmlFor="phoneNumber">Phone Number:</label>
@@ -132,7 +129,6 @@ function UpdateUser() {
             name="phone_number"
             value={userData.phone_number || ""}
             onChange={handleChange}
-            required
           />
 
           <label htmlFor="email">Email:</label>
@@ -151,7 +147,6 @@ function UpdateUser() {
             name="country"
             value={userData.country || ""}
             onChange={handleChange}
-            required
           >
             <option value="">Select a country</option>
             {countries.map((c) => (
@@ -168,7 +163,6 @@ function UpdateUser() {
             value={userData.address || ""}
             onChange={handleChange}
             rows={3}
-            required
           />
 
           <button type="submit" disabled={loadingUpdate} className="update-btn">
